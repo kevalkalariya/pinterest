@@ -1,7 +1,8 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.models import User
+from PIL import Image
+
 
 # Create your models here.
 # override UserManager for make email as UserName
@@ -41,16 +42,33 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
-    username = models.TextField(null=True)
+    username = models.CharField(null=True, blank=True, max_length=100)
     REQUIRED_FIELDS = []
     USERNAME_FIELD = 'email'
     objects = UserManager()
 
-class Profile(models.Model):
-    user = models.OneToOneField(User,on_delete=models.CASCADE)
-    image = models.ImageField(default='default.jpg', upload_to='profile_pics')
-    firstname = models.CharField(max_length=200,null=True)
-    lastname = models.CharField(max_length=200,null=True)
-    about = models.TextField(max_length=600)
-    website = models.CharField(max_length=200)
+    @property
+    def temp_username(self):
+        return str(self.email).split('@')[0]
 
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)  # Delete Profile when user is deleted
+    image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+    firstname = models.CharField(max_length=200, blank=True, null=True)
+    lastname = models.CharField(max_length=200, blank=True, null=True)
+    about = models.TextField(max_length=600, blank=True, null=True)
+    website = models.CharField(max_length=200, blank=True, null=True)
+
+    def __str__(self):
+        return self.user.email
+
+    def save(self, *args, **kwargs):
+        super(Profile, self).save(*args, **kwargs)
+
+        img = Image.open(self.image.path)
+
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.image.path)

@@ -1,0 +1,21 @@
+{% extends "posts/base.html" %}
+{% block content %}
+<h1 class="mb-3">Posts by {{ view.kwargs.username }} ({{ page_obj.paginator.count }})</h1>
+{% for pin in pins %}
+    <img class="rounded-circle article-img" src="{{ pin.author.profile.image.url }}">
+{% endfor %}
+{% for pin in pins %}
+<article class="media content-section">
+    <img src="{{ pin.img.url }}">
+<!--    <img class="rounded-circle article-img" src="{{ pin.author.profile.image.url }}">-->
+    <div class="media-body">
+        <div class="article-metadata">
+            <a class="mr-2" href="{% url 'user-pins' pin.author.id %}">{{ pin.author.temp_username }}</a>
+            <small class="text-muted">{{ pin.date_posted|date:"F d,Y"}}</small>
+        </div>
+        <h2><a class="article-title" href="{% url 'pin-detail' pin.id %}">{{ pin.title }}</a></h2>
+        <p class="article-content">{{ pin.description }}</p>
+    </div>
+</article>
+{% endfor %}
+{% endblock content%}

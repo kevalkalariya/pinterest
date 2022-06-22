@@ -1,0 +1,20 @@
+{% extends "posts/base.html" %}
+{% block content %}
+<div class="float-center">
+    <center><img class="rounded-circle account-img" src="{{ user.profile.image.url }}"><br></center>
+    <center><h2 class="mr-2">{{ user.temp_username }}</h2></center>
+</div>
+<div class="row d-flex justify-content-center">
+    <a class="btn btn-light btn-sm mt-1 mb-1" }>Share</a>
+    <a class="btn btn-danger btn-sm mt-1 mb-1">Edit Profile</a>
+</div>
+<div>
+    <h5><a class="text-left" href="{%  url 'board-create' %}">create board</a></h5>
+</div>
+{% for board in boards %}
+
+<div class="container">
+    <button type="submit">{{ board.board_name }}dbss</button>
+</div>
+{% endfor %}
+{% endblock content%}

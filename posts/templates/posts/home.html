@@ -1,0 +1,14 @@
+{% extends "posts/base.html" %}
+{% block content %}
+{% for pin in pins %}
+<article class="media media-container">
+    <div class="media-body">
+        <img src="{{ pin.img.url }}" style="width:40%" class="rounded img-fluid">
+        <h2><a class="article-title">{{ pin.title }}</a></h2>
+        <p class="article-content">{{ pin.description }}</p>
+        <img class="rounded-circle article-img" style="width:2%" src="{{ pin.author.profile.image.url }}">
+        <a class="mr-2" href="{% url 'user-pins' pin.author.id %}">{{ pin.author.temp_username }}</a>
+    </div>
+</article>
+{% endfor %}
+{% endblock %}

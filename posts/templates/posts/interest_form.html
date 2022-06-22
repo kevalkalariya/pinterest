@@ -1,0 +1,15 @@
+{% extends "posts/base.html" %}
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    {% for cate in pincate %}
+    <div class="form-check">
+        <label name="checkbox">
+            <input type="checkbox" value="{{ cate.category_name}}"  name="interest">
+            {{ cate.category_name}}
+        </label>
+    </div>
+    {% endfor %}
+    <button type="submit">submit</button>
+</form>
+{% endblock %}
