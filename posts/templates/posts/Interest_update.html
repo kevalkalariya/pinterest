@@ -1,0 +1,19 @@
+{% extends "posts/base.html" %}
+{% block content %}
+    All Brands :
+    {% for all in interest %}
+        <a class="btn btn-outline-info" href="{% url 'add-interest' all.id %}">{{ all.category_name }}</a>
+    {% endfor %}
+
+    <br>
+    <br>
+
+    {% if myinterest %}
+        Your Favourites :
+        {% for all in myinterest %}
+            <a class="btn btn-outline-success" href="{% url 'delete-interest' all.pin_cate_id %}">{{ all.pin_cate }}</a>
+        {% endfor %}
+    {% else %}
+        <p>No Favourite Brands yet, Click on Brand you want to add to your Favourites and View their products</p>
+    {% endif %}
+{% endblock content %}

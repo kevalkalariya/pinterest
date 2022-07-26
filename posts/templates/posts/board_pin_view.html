@@ -1,0 +1,25 @@
+
+
+{% extends "posts/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% for board in board_pin %}
+<div class="box">
+        <div class="row">
+            <div class="col-md-6">
+            <img src="{{ board.pin_id.img.url  }}" >
+        </div>
+
+        <div class="media-body col-md-6">
+
+
+            <h2><a class="article-title">{{ board.pin_id.title }}</a></h2>
+            <a class="mr-2" >{{ board.pin_id.author.temp_username }}</a>
+
+        </div>
+        </div>
+
+
+</div>
+{% endfor %}
+{% endblock content%}
