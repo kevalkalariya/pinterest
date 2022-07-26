@@ -7,9 +7,61 @@
     margin-right:600px;
     margin-top:30px;
     margin-bottom: 20px;
+    width:100%;
 
   }
-.media-container{
+.box {
+    width: 450px;
+    padding: 5px;
+    background-color: white;
+    margin-bottom: 10px;
+    break-inside: avoid;
+    margin-left: 20px;
 
-
+}
+.pin_container {
+    width: 450px;
+    float: left;
+    padding:100px;
+    margin-left:20px;
+}
+.box img {
+    width: 100%;
+    object-fit: contain;
+    border-radius: 15px;
+}
+.chat-section{
+    box-sizing : border-box;
+    padding:0;
+    margin:0;
+    display:flex;
+    height: 100vh;
+    background : #666;
+    flex-direction : column;
+}
+.header{
+    padding: 10px 5%;
+    background: #444;
+    color: #888;
+}
+.message-area{
+    height: 100%;
+    min-height: 7vh;
+    over-flow-y: auto;
+    padding: 4%;
+    background: #555;
+    padding-bottom: 10px;
+}
+.input-area{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+#message-input{
+    padding:20px;
+    width:100%;
+}
+#send-btn{
+    padding: 20px 40px;
+    background: gold;
 }

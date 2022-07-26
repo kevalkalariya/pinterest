@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     'users',
     'crispy_forms',
     'posts',
-    # 'django_use_email_as_username.apps.DjangoUseEmailAsUsernameConfig',
+    'chat',
+    'channels',
+    'django_social_share',
 ]
 
 MIDDLEWARE = [
@@ -72,11 +74,21 @@ TEMPLATES = [
         },
     },
 ]
-
-WSGI_APPLICATION = 'pinterest_clone.wsgi.application'
+# WSGI_APPLICATION = 'pinterest_clone.wsgi.application'
+ASGI_APPLICATION = 'pinterest_clone.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
+
+# LEARN CHANNELS
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
 
 DATABASES = {
     'default': {
@@ -130,6 +142,11 @@ LOGIN_URL = 'login'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+    # 'content/static',
+]
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
@@ -137,8 +154,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-
-
 
 AUTH_USER_MODEL = 'users.User'
 

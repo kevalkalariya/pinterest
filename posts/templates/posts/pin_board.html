@@ -10,6 +10,9 @@
                         <div>
                             <h2>Created board</h2>
                         </div>
+                        {% for message in messages %}
+                        <p id="messages" class="alert alert-warning alert-dismissible fade show">{{message}}</p>
+                        {% endfor %}
                         <form method='Post'>
                             {% csrf_token %}
                             <fieldset class="from-group">
@@ -19,10 +22,11 @@
                             <br>
                         </form>
 
-                        {% endblock content%}
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock content%}

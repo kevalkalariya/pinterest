@@ -12,14 +12,14 @@
                 {% for message in messages %}
                 <p id="messages" class="alert alert-warning alert-dismissible fade show">{{message}}</p>
                 {% endfor %}
-                <form class="form" action="##" method="POST" id="registrationForm">
+                <form class="form" action="##" method="POST" id="registrationForm" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="form-group">
                         <div class="text-center">
-                            <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png"
+                            <img src="{{ profile_url }}"
                                  class="avatar img-circle img-thumbnail" alt="avatar">
                             <h6>Upload a different photo...</h6>
-                            <input type="file" class="text-center center-block file-upload">
+                                {{ profile_form.image }}
                         </div>
                         <div class="col-xs-6">
                             {{ user_form.email.label}}<br>
@@ -65,13 +65,13 @@
                             <button class="btn btn-lg btn-success" type="submit"><i
                                     class="glyphicon glyphicon-ok-sign"></i> Save
                             </button>
-                            <button class="btn btn-lg" type="reset"><i class="glyphicon glyphicon-repeat"></i> Reset
-                            </button>
+
                         </div>
                     </div>
                 </form>
 
                 <hr>
+
 
             </div><!--/tab-pane-->
             <!--/tab-pane-->

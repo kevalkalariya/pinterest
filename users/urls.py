@@ -2,14 +2,15 @@ from users import views as user_views
 from django.urls import path
 from django.contrib.auth import views as auth_views
 
+from .views import RegisterUser, LogoutUser, ProfileView
+
 urlpatterns = [
-    # path('', user_views.home, name='home'),
-    path('register/', user_views.register, name='register'),
-    # path('login/', user_views.login_user, name='login'),
-    path('login/',auth_views.LoginView.as_view(template_name='users/login.html'),name="login"),
-    path('logout/', user_views.logout_user, name='logout'),
-    path('profile/', user_views.profile, name='profile'),
-    path('view_profile/',user_views.ViewProfile.as_view(),name='view-profile'),
+    path('register/', RegisterUser.as_view(), name='register'),
+    path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name="login"),
+    path('logout/', LogoutUser.as_view(), name='logout'),
+    path('profile/', ProfileView.as_view(), name='profile'),
+    path('view_profile/', user_views.ViewProfile.as_view(), name='view-profile'),
+    path('view_profile/<str:board>/', user_views.ViewProfile.as_view(), name='add-board'),
 
 
     # reset password url

@@ -6,15 +6,53 @@
 </div>
 <div class="row d-flex justify-content-center">
     <a class="btn btn-light btn-sm mt-1 mb-1" }>Share</a>
-    <a class="btn btn-danger btn-sm mt-1 mb-1">Edit Profile</a>
+    <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'profile' %}">Edit Profile</a>
 </div>
-<div>
-    <h5><a class="text-left" href="{%  url 'board-create' %}">create board</a></h5>
-</div>
-{% for board in boards %}
-
 <div class="container">
-    <button type="submit">{{ board.board_name }}dbss</button>
+    <h5><a class="text-left" href="{%  url 'board-create' %}">create board</a></h5>
+    {% for board in boards %}
+    <div class="btn-group mt-4 " role="group">
+        <a id="btnGroupDrop1" type="button" class="btn bg-light roundeed border border-danger p-5"
+           data-bs-toggle="dropdown"
+           aria-expanded="false" href="{% url 'view-board-pin' board.board_name %}">{{ board.board_name }}
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+
+<h1 class="mb-3">Posts by <span style="color:blue"> {{ user.temp_username }}</span></h1>
+{% for pin in pins %}
+<div class="pin_container">
+    <div class="box">
+        <div class="grid-item grid-item--height3">
+            <img src="{{ pin.img.url }}">
+            <a class="mr-2" href="{% url 'user-pins' pin.author.id %}">{{ pin.author.temp_username }}</a>
+            <small class="text-muted">{{ pin.date_posted|date:"F d,Y"}}</small>
+            <h2><a class="article-title" href="{% url 'pin-detail' pin.id %}">{{ pin.title }}</a></h2>
+            <p class="article-content">{{ pin.description }}</p>
+            <a class="btn btn-danger" href="{% url 'pin-update' pin.id %}">Edit Pin</a>
+            <a class="btn btn-danger" href="{% url 'delete-pin' pin.id %}">Delete Pin</a>
+        </div>
+    </div>
 </div>
 {% endfor %}
+<div class="container pl-1">
+    <div class="container">
+        <div class="col-md-6">
+            <h2>Unorganized ideas</h2>
+        </div>
+        {% for savepin in savedpins %}
+        <div class="box float-left">
+            <div class="row">
+                <img src="{{ savepin.pin_id.img.url }}">
+                <img class="rounded-circle account-img" style="width:10%" src="{{ user.profile.image.url }}">
+                <h3>{{ savepin.pin_id.author.temp_username }}</h3>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
 {% endblock content%}

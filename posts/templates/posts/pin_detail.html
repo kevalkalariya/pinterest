@@ -1,19 +1,71 @@
 {% extends "posts/base.html" %}
+{% load static %}
 {% block content %}
 {% for pin in pins %}
-<article class="media content-section">
-    <div class="media-body">
-        <img src="{{ pin.img.url }}">
-        <h2><a class="article-title">{{ pin.title }}</a></h2>
-        <p class="article-content">{{ pin.description }}</p>
-        <a class="mr-2">{{ pin.author.temp_username }}</a>
-    </div>
-    {% if pin.author == user %}
-    <div>
-        <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'pin-update' pin.id %}">Update</a>
-        <a class="btn btn-danger btn-sm mt-1 mb-1">Delete</a>
-    </div>
-    {% endif %}
-</article>
+
+
+<div class="box">
+    <article class="media content-section-detail ">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="{{ pin.img.url }}">
+                </div>
+
+                <div class="media-body col-md-6">
+
+                    <h4>Uploaded by {{ pin.author.temp_username }}</h4>
+                    <h2><a class="article-title">{{ pin.title }}</a></h2>
+                    <img class="rounded-circle article-img" src="{{ pin.author.profile.image.url }}">
+                    <a class="mr-2" href="{% url 'user-pins' pin.author.id %}">{{ pin.author.temp_username }}</a><br>
+
+                    <small class="text-muted">{{ pin.date_posted|date:"F d,Y"}}</small>
+                    <p class="article-content">{{ pin.description }}</p>
+
+
+                </div>
+            </div>
+            <div class="row">
+                    {% if request.user.is_authenticated %}
+                    {% if pin.author.id != request.user.id %}
+                    <p>{{ followers.is_allowed }}</p>
+                    <input type="hidden" name="pin_author_id" value="{{ pin.author.id }}">
+                    <span><a href="#" id="follow_author_id" class="btn btn-danger btn-rounded"
+                             type="submit"><strong>Follow</strong></a></span>
+                    <!--                {% url 'pin-detail' pin.id %}-->
+                    <span><a href="#" id="unfollow_author_id" class="btn btn-danger btn-rounded"
+                             type="submit"><strong>Unfollow</strong></a></span>
+                    {% endif %}
+                    {% endif %}
+                    <a href="{% url 'download-pin' pin.id %}"><i class="fa fa-download ml-3 fa-2x" style="color:#696969"
+                                                                 aria-hidden="true"></i></a>
+
+                    {% load social_share %}
+                    {% post_to_facebook object_or_url "<p style='color: green;'>facebook</p>" %}
+                    {% post_to_linkedin object_or_url %}
+            </div>
+            <div class="row">
+                <form method="POST">
+                    {% csrf_token %}
+                    <fieldset class="from-group">
+                        <legend class="border-bottom mb-4 pt-3"><h2>Comments</h2></legend>
+                        {{ form.comment }}
+                    </fieldset>
+                    <button class="btn btn-info">comment</button>
+                </form>
+                {% for comment in comments %}
+                <strong>{{ comment.user.temp_username }}</strong>
+                <small class="text-muted">{{ comment.date_posted|date:"F d,Y"}}</small>
+                <p>{{ comment.comment }}</p>
+                {% endfor %}
+            </div>
+
+    </article>
+
+</div>
 {% endfor %}
 {% endblock content%}
+{% block jquery %}
+<script src="{% static 'posts/follow_pin_id.js' %}"></script>
+<script src="{% static 'posts/follow_author_id.js' %}"></script>
+{% endblock jquery %}

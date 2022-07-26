@@ -1,14 +1,112 @@
 {% extends "posts/base.html" %}
 {% block content %}
+
+
 {% for pin in pins %}
-<article class="media media-container">
-    <div class="media-body">
-        <img src="{{ pin.img.url }}" style="width:40%" class="rounded img-fluid">
-        <h2><a class="article-title">{{ pin.title }}</a></h2>
-        <p class="article-content">{{ pin.description }}</p>
-        <img class="rounded-circle article-img" style="width:2%" src="{{ pin.author.profile.image.url }}">
-        <a class="mr-2" href="{% url 'user-pins' pin.author.id %}">{{ pin.author.temp_username }}</a>
-    </div>
-</article>
+<div class="box float-left">
+    <article class="media content-section">
+        <div class="media-body">
+            <a href="{% url 'pin-detail' pin.id %}"><img src="{{ pin.img.url }}" style="width:200px; height:200px;"></a>
+            <h2><a class="article-title" href="{% url 'pin-detail' pin.id %}">{{ pin.title }}</a></h2>
+            <p class="article-content">{{ pin.description }}</p>
+            <img class="rounded-circle article-img" style="width:13%" src="{{ pin.author.profile.image.url }}">
+            <a class="mr-2" href="{% url 'user-pins' pin.author.id %}">{{ pin.author.temp_username }}</a>
+            <small class="text-muted">{{ pin.date_posted|date:"F d,Y"}}</small><br>
+
+            {% if user.is_authenticated %}
+            <div class="row">
+                <div class="col-md-6">
+                    <a class="btn btn-danger mt-4" href="{% url 'save-pin' pin.id %}">Save</a>
+                </div>
+                <div class="col-md-6 dropdown mr-sm-4 mt-2">
+                    <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Save to Board
+                    </button>
+
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        {% for board in boards %}
+                        <a class="dropdown-item" href="{% url 'dropdown-board' board.board_name pin.id %}">{{
+                            board.board_name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <span id="like_count_{{ pin.id }}">{{ pin.like_count }}Like</span><br>
+            {% csrf_token %}
+            <button id="like_{{ pin.id }}" name="pin_id" value="{{ pin.id }}" class="like_btn btn btn-danger">
+                {% if is_liked %}
+                DisLike
+                {% else %}
+                Like
+                {% endif %}
+            </button>
+            {% endif %}
+        </div>
+
+    </article>
+</div>
 {% endfor %}
-{% endblock %}
+
+
+<div style="top: 200% ;margin-left:50%; width: 20%;">
+    {% if is_paginated %}
+    {% if page_obj.has_previous %}
+    <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+    <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+    {% if page_obj.number == num %}
+    <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+    <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+    {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+    <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+    <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+    {% endif %}
+</div>
+{% endif %}
+
+{% endblock content %}
+{% block jquery %}
+
+<script>
+    $(document).on('click', '.like_btn', function (e){
+        e.preventDefault();
+        var pid= $(this).val();
+
+        $.ajax({
+                type: 'POST',
+                url: "{% url 'pin-like' %}",
+                data: {'pid':pid, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                success: function (response) {
+                    if(response.is_liked == true){
+                        $("#like_"+pid).text("Unlike")
+                        $("#like_count_"+pid).text(response.total_likes+" likes")
+                        $("#like_"+pid).removeClass("btn btn-danger")
+                        $("#like_"+pid).addClass("btn btn-light")
+                    }
+                    else{
+                        $("#like_"+pid).text("Like")
+                        $("#like_count_"+pid).text(response.total_likes+" likes")
+                        $("#like_"+pid).removeClass("btn btn-light")
+                        $("#like_"+pid).addClass("btn btn-danger")
+                    }
+                        console.log(response)
+                }
+            })
+    });
+
+
+
+
+
+</script>
+{% endblock jquery %}
+
+
+

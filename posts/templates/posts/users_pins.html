@@ -1,21 +1,35 @@
 {% extends "posts/base.html" %}
 {% block content %}
-<h1 class="mb-3">Posts by {{ view.kwargs.username }} ({{ page_obj.paginator.count }})</h1>
+
+<div class="float-center mt-5">
+    <center><img class="rounded-circle account-img" src="{{ pins.0.author.profile.image.url }}"><br></center>
+    <center><h2 class="mr-2">{{ pins.0.author.temp_username }}</h2></center>
+</div>
+<div class="row d-flex justify-content-center">
+<!--    <a class="btn btn-danger btn-sm mt-1 mb-1" href="#">Follow</a>-->
+    {% if request.user.is_authenticated %}
+                {% if pin.author.id != request.user.id %}
+                <p>{{ followers.is_allowed }}</p>
+                <input type="hidden" name="pin_author_id" value="{{ pin.author.id }}">
+                <span><a href="#" id="follow_author_id" class="btn btn-danger btn-rounded"
+                         type="submit"><strong>Follow</strong></a></span>
+                <span><a href="#" id="unfollow_author_id" class="btn btn-danger btn-rounded"
+                         type="submit"><strong>Unfollow</strong></a></span>
+                {% endif %}
+                {% endif %}
+</div>
 {% for pin in pins %}
-    <img class="rounded-circle article-img" src="{{ pin.author.profile.image.url }}">
-{% endfor %}
-{% for pin in pins %}
-<article class="media content-section">
-    <img src="{{ pin.img.url }}">
-<!--    <img class="rounded-circle article-img" src="{{ pin.author.profile.image.url }}">-->
-    <div class="media-body">
-        <div class="article-metadata">
+<div class="pin_container">
+    <div class="box">
+        <div class="grid-item grid-item--height3">
+            <img src="{{ pin.img.url }}">
             <a class="mr-2" href="{% url 'user-pins' pin.author.id %}">{{ pin.author.temp_username }}</a>
             <small class="text-muted">{{ pin.date_posted|date:"F d,Y"}}</small>
+            <h2><a class="article-title" href="{% url 'pin-detail' pin.id %}">{{ pin.title }}</a></h2>
+            <p class="article-content">{{ pin.description }}</p>
         </div>
-        <h2><a class="article-title" href="{% url 'pin-detail' pin.id %}">{{ pin.title }}</a></h2>
-        <p class="article-content">{{ pin.description }}</p>
     </div>
-</article>
+</div>
 {% endfor %}
+
 {% endblock content%}
