@@ -3,7 +3,7 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from .models import Pin, PinCategory, UserInterest, PinBoards, SavePin, Boards, Comments, Followers, Likes
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import PinForm, PinBoardForm, CommentsForm
@@ -117,23 +117,36 @@ class PinDetailView(DetailView):
             return redirect('pin-detail', pk=pk)
 
 
-class PinCreateView(LoginRequiredMixin, View):
+class PinCreateView(LoginRequiredMixin, CreateView):
     """this class for create pin"""
     model = Pin
-    form_class = PinForm
-    template_name = "posts/pin_form.html"
+    fields = ['img', 'title', 'description', 'pin_category']
 
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST, request.FILES)
-
-        if form.is_valid():
-            form = form.save(commit=False)
-            form.author = request.user
-            form.save()
-            messages.info(request, f'Your Pin is successfully created!')
-            return redirect('home')
-        messages.error(request, f'Invalid data')
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        form.save()
         return redirect('home')
+
+    # model = Pin
+    # form_class = PinForm
+    # template_name = "posts/pin_form.html"
+    #
+    # def get(self,request):
+    #     # print('oooooooooooooo')
+    #     return render(request, "posts/pin_form.html", {})
+    #
+    # def post(self, request, *args, **kwargs):
+    #     # form = self.form_class(request.POST, request.FILES)
+    #     form = PinForm()
+    #     if form.is_valid():
+    #         form = PinForm(request.POST)
+    #         form = form.save(commit=False)
+    #         form.author = request.user
+    #         form.save()
+    #         messages.info(request, f'Your Pin is successfully created!')
+    #         return redirect('home')
+    #     messages.error(request, f'Invalid data')
+    #     return redirect('home')
 
 
 class PinUpdateView(LoginRequiredMixin, UpdateView):
@@ -223,6 +236,7 @@ class ViewBoardPin(View):
 
 class LikeView(LoginRequiredMixin, View):
     """this class for like pin"""
+
     def post(self, request):
         pin_id = request.POST['pid']
         print(pin_id)
